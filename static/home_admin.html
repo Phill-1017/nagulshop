@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Nagul SHOP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #3c4a55;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #709eb7;
+            color: #ffffff;
+            padding: 10px 20px;
+        }
+        .navbar a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .navbar a:hover {
+            background-color: #4CAF50;
+        }
+        .nav-links {
+            display: flex;
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+        .user-info {
+            margin-right: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-links">
+            <a href="/home_admin">Home</a>
+            <a href="/shop">Shop</a>
+            <a href="/messages">Message</a>
+            <a href="/create_offer">Create Offer</a>
+            <a href="cart.html">Shopping Cart</a>
+        </div>
+        <div class="nav-right">
+            <span class="user-info" id="user-name">Loading...</span>
+            <a href="/" onclick="return logout()">Logout</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const username = localStorage.getItem('username') || 'Guest';
+            document.getElementById('user-name').textContent = username;
+        });
+
+        function logout() {
+            localStorage.clear(); // This will clear all local storage including the username
+            return true; // Redirect after logout operations are handled
+        }
+    </script>
+</body>
+</html>

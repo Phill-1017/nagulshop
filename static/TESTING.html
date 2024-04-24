@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .cart-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .item-details {
+            flex-grow: 1;
+        }
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+    <div id="cartContents">
+        <!-- Dynamically populated cart items will go here -->
+    </div>
+
+    <script>
+        // Example cart data
+        let cartItems = [
+            { id: 1, name: 'Running Shoes', price: 100, quantity: 1 },
+            { id: 2, name: 'Basketball Shoes', price: 150, quantity: 2 }
+        ];
+
+        function updateCartDisplay() {
+            const cartContents = document.getElementById('cartContents');
+            cartContents.innerHTML = ''; // Clear the current display
+
+            cartItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <div class="item-details">
+                        <strong>${item.name}</strong>
+                        <p>$${item.price} each</p>
+                    </div>
+                    <input type="number" min="1" value="${item.quantity}" onchange="updateQuantity(${item.id}, this.value)">
+                    <button onclick="removeFromCart(${item.id})">Remove</button>
+                `;
+                cartContents.appendChild(itemElement);
+            });
+        }
+
+        function updateQuantity(itemId, newQuantity) {
+            const item = cartItems.find(i => i.id === itemId);
+            if (item) {
+                item.quantity = newQuantity;
+                updateCartDisplay(); // Update the display after changing the quantity
+            }
+        }
+
+        function removeFromCart(itemId) {
+            cartItems = cartItems.filter(item => item.id !== itemId);
+            updateCartDisplay(); // Refresh display after removing an item
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartDisplay(); // Initial display of cart items
+        });
+    </script>
+</body>
+</html>

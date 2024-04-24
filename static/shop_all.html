@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Offers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .offer {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            cursor: pointer; /* Indicates the element is clickable */
+        }
+        .offer:hover {
+            background-color: #e8e8e8; /* Highlight offer on hover */
+        }
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            z-index: 1000; /* Ensure it's on top of other content */
+            display: none; /* Hidden by default */
+        }
+        .modal-active {
+            display: block; /* Show modal when active */
+        }
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 999; /* Just below the modal */
+            display: none; /* Hidden by default */
+        }
+    </style>
+</head>
+<body>
+    <h1>Available Offers</h1>
+    <div id="offersList">
+        <!-- Offers will be dynamically loaded here -->
+    </div>
+
+    <!-- Modal for showing offer details -->
+    <div id="offerModal" class="modal">
+        <h2>Offer Details</h2>
+        <p id="offerDetails"></p>
+    </div>
+    <!-- Backdrop for modal -->
+    <div id="backdrop" class="backdrop"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiUrl = '/shoe-offer/all'; // Base URL for the shoe offer API
+
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch offers');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const offersList = document.getElementById('offersList');
+                data.forEach(offer => {
+                    const offerDiv = document.createElement('div');
+                    offerDiv.className = 'offer';
+                    offerDiv.innerHTML = `<strong>Name:</strong> ${offer.name}<br>
+                                          <strong>Price:</strong> ${offer.price}$<br>
+                                          <strong>Description:</strong> ${offer.description}`;
+                    offerDiv.addEventListener('click', () => showDetails(offer));
+                    offersList.appendChild(offerDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load offers. Check console for more information.');
+            });
+        });
+
+        function showDetails(offer) {
+            const modal = document.getElementById('offerModal');
+            const backdrop = document.getElementById('backdrop');
+            document.getElementById('offerDetails').innerHTML = `
+                <strong>Name:</strong> ${offer.name}<br>
+                <strong>Price:</strong> ${offer.price}$<br>
+                <strong>Description:</strong> ${offer.description}<br>
+                <strong>Details:</strong> Additional details here...`; // Add more detailed info if available
+            modal.classList.add('modal-active');
+            backdrop.style.display = 'block';
+
+            backdrop.addEventListener('click', function() {
+                modal.classList.remove('modal-active');
+                backdrop.style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>

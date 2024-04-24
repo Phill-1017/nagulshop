@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Message</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #475864;
+        }
+        .form-container {
+            background: #709eb8;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Send a Message</h2>
+        <form id="messageForm">
+            <input type="hidden" id="sender" name="sender" value="currentUserAccountId"> <!-- Hidden sender field -->
+
+            <label for="receiverUsername">Receiver Username:</label>
+            <input type="text" id="receiverUsername" name="receiverUsername" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+
+            <input type="submit" value="Send Message">
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Assume the current user's ID is stored in session or local storage
+            const senderId = sessionStorage.getItem('userId') || 'defaultSenderId'; // Fetch this from storage
+            document.getElementById('sender').value = senderId;
+
+            document.getElementById('messageForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const receiverUsername = document.getElementById('receiverUsername').value;
+                const messageContent = document.getElementById('message').value;
+
+                // First, resolve the receiver's username to their ID
+                fetch(`/api/users/getUserId/${receiverUsername}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(userData => {
+                    if (!userData.id) throw new Error('Receiver not found');
+
+                    // Then send the message
+                    const messageData = {
+                        sender: senderId,
+                        receiver: userData.id,
+                        message: messageContent
+                    };
+
+                    return fetch('/message', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(messageData)
+                    });
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    alert('Message sent successfully!');
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Failed to send message.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

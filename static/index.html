@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpg" href="../img/nagul2.jpg">
+    <title>Nagul Shop</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #465864;
+            margin: 0;
+        }
+        .container {
+            background: #709eb6;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            display: inline-block;
+            border: 1px solid #465864;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[type="submit"], button {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover, button:hover {
+            background-color: #45a049;
+        }
+        button {
+            background-color: #008CBA;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to The Nagul Shop</h2>
+        <form id="loginForm">
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="submit" value="Login">
+        </form>
+        <button onclick="window.location.href='register'">Register</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiBaseURL = 'account'; // Set this to your API's base URL if it's not the same domain
+
+            document.getElementById('loginForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(apiBaseURL + '/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Login failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Login Success:', data);
+                    localStorage.setItem('id', data.id);  // Store user ID
+                    localStorage.setItem('username', data.username);  // Store username
+                    localStorage.setItem('role', data.role);  // Store role
+
+                    // Redirect based on the role
+                    if (data.role === 'admin') {
+                        window.location.href = '/home_admin'; // Redirect to admin home page
+                    } else if (data.role === 'user') {
+                        window.location.href = '/home'; // Redirect to user home page
+                    } else {
+                        alert('Access Denied: You do not have the permissions.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Login Error:', error);
+                    alert('Login Failed. Check console for more information.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
