@@ -8,10 +8,10 @@
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
-            background-color: #f4f4f4;
+            background-color: #465864;
         }
         .message {
-            background: white;
+            background: #709eb8;
             padding: 20px;
             margin: 10px 0;
             border-radius: 5px;
@@ -29,8 +29,17 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const userId = 'user123'; // Set this dynamically or retrieve from session/local storage as needed
-            const apiUrl = `/messageRouter/messages/${userId}`; // Modify with your actual API base URL if different
+            // Retrieve the username from local storage
+            const username = localStorage.getItem('username');
+
+            // Check if username is available in local storage
+            if (!username) {
+                console.error('Username not found in local storage');
+                document.getElementById('messagesContainer').innerHTML = '<div class="no-messages">Username not found. Please log in again.</div>';
+                return;
+            }
+
+            const apiUrl = `http://127.0.0.1:8000/message/messages/${username}`; // Use template literal for correct URL
 
             fetch(apiUrl, {
                 method: 'GET',

@@ -3,91 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shopping Cart</title>
+    <title>Webshop</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
             background-color: #f4f4f4;
         }
-        .cart-item {
+        .offer {
             background: white;
-            padding: 15px;
+            padding: 20px;
             margin: 10px 0;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .item-details {
-            flex-grow: 1;
-        }
-        input[type="number"] {
-            width: 50px;
-            padding: 5px;
-        }
-        button {
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
             cursor: pointer;
         }
-        button:hover {
-            background-color: #45a049;
+        .offer:hover {
+            background-color: #e8e8e8;
+        }
+        .modal, .backdrop {
+            display: none;
+        }
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            z-index: 1001;
+            width: 80%;
+            max-width: 600px;
+            overflow: auto; /* Ensures modal content is scrollable */
+        }
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Shopping Cart</h1>
-    <div id="cartContents">
-        <!-- Dynamically populated cart items will go here -->
+    <h1>Webshop Offers</h1>
+    <div id="offers"></div>
+    <div id="offerDetail">
+        <h2 id="offerTitle"></h2>
+        <p id="offerDescription"></p>
+        <form id="bidForm">
+            <input type="hidden" id="offerId" name="offerId">
+            <label for="bidAmount">Bid Amount:</label>
+            <input type="number" id="bidAmount" name="bidAmount" required>
+            <button type="submit">Place Bid</button>
+        </form>
     </div>
 
     <script>
-        // Example cart data
-        let cartItems = [
-            { id: 1, name: 'Running Shoes', price: 100, quantity: 1 },
-            { id: 2, name: 'Basketball Shoes', price: 150, quantity: 2 }
-        ];
+        document.addEventListener("DOMContentLoaded", async () => {
+    const offersContainer = document.getElementById("offers");
+    const offerDetail = document.getElementById("offerDetail");
+    const offerTitle = document.getElementById("offerTitle");
+    const offerDescription = document.getElementById("offerDescription");
+    const bidForm = document.getElementById("bidForm");
+    const offerIdInput = document.getElementById("offerId");
 
-        function updateCartDisplay() {
-            const cartContents = document.getElementById('cartContents');
-            cartContents.innerHTML = ''; // Clear the current display
-
-            cartItems.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'cart-item';
-                itemElement.innerHTML = `
-                    <div class="item-details">
-                        <strong>${item.name}</strong>
-                        <p>$${item.price} each</p>
-                    </div>
-                    <input type="number" min="1" value="${item.quantity}" onchange="updateQuantity(${item.id}, this.value)">
-                    <button onclick="removeFromCart(${item.id})">Remove</button>
-                `;
-                cartContents.appendChild(itemElement);
+    // Fetch and display all offers
+    const fetchOffers = async () => {
+        try {
+            const response = await fetch('/shoe-offer/all');
+            const offers = await response.json();
+            offersContainer.innerHTML = '';
+            offers.forEach(offer => {
+                const offerDiv = document.createElement('div');
+                offerDiv.className = 'offer';
+                offerDiv.textContent = offer.title;
+                offerDiv.addEventListener('click', () => showOfferDetail(offer));
+                offersContainer.appendChild(offerDiv);
             });
+        } catch (error) {
+            console.error("Error fetching offers:", error);
         }
+    };
 
-        function updateQuantity(itemId, newQuantity) {
-            const item = cartItems.find(i => i.id === itemId);
-            if (item) {
-                item.quantity = newQuantity;
-                updateCartDisplay(); // Update the display after changing the quantity
+    // Show offer details and bid form
+    const showOfferDetail = (offer) => {
+        offerTitle.textContent = offer.title;
+        offerDescription.textContent = offer.description;
+        offerIdInput.value = offer.id;
+        offerDetail.style.display = 'block';
+    };
+
+    // Handle bid form submission
+    bidForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const bidAmount = document.getElementById("bidAmount").value;
+        const offerId = document.getElementById("offerId").value;
+        const bidData = { offer_id: parseInt(offerId), amount: parseFloat(bidAmount) };
+
+        try {
+            const response = await fetch(`/bid`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bidData)
+            });
+
+            if (response.ok) {
+                alert("Bid placed successfully!");
+            } else {
+                alert("Error placing bid.");
             }
+        } catch (error) {
+            console.error("Error placing bid:", error);
         }
+    });
 
-        function removeFromCart(itemId) {
-            cartItems = cartItems.filter(item => item.id !== itemId);
-            updateCartDisplay(); // Refresh display after removing an item
-        }
+    fetchOffers();
+});
 
-        document.addEventListener('DOMContentLoaded', function() {
-            updateCartDisplay(); // Initial display of cart items
-        });
     </script>
 </body>
 </html>

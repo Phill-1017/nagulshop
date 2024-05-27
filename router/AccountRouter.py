@@ -26,15 +26,16 @@ async def registerAccount(account: AccountRequest):
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=500)
 
-@accountRouter.post("/login")
+
+@accountRouter.post("/login", response_model=LoginResponse)
 async def login(loginRequest: LoginRequest):
     try:
         acc = await repository.repository.login(loginRequest)
         if acc is None:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Wrong username or password")
 
-
-        return acc
+        # Ensure that `acc` includes id, username, and role
+        return LoginResponse(id=acc.id, username=acc.username, role=acc.role)
     except HTTPException as http_ex:
         raise http_ex
     except Exception as e:

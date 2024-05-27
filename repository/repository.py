@@ -16,8 +16,11 @@ from model.Message import Message
 from model.Account import Account
 from model.ShoeOffer import ShoeOffer
 
+import os
+
+
 Base = declarative_base()
-DATABASE_URL = "postgresql+psycopg2://postgres:postgres@localhost:5432/CleanFit"
+DATABASE_URL = os.getenv('DB_URL', "postgresql+psycopg2://postgres:mynagulshop@localhost:5432/NagulShop_BBY")
 engine = create_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(autocommit=False, bind=engine)
 db = SessionLocal()
@@ -79,8 +82,8 @@ async def register(account: AccountRequest):
 
 async def login(loginRequest: LoginRequest):
     acc = db.query(Account).filter(Account.username == loginRequest.username).first()
-    if acc.password == loginRequest.password:
-        return LoginResponse(username=acc.username, role=acc.role)
+    if acc and acc.password == loginRequest.password:
+        return LoginResponse(id=acc.id, username=acc.username, role=acc.role)  # Include id in the response
     else:
         return None
 

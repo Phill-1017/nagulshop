@@ -1,19 +1,16 @@
-from typing import List, Dict
-
-from fastapi import APIRouter
+from typing import List
+from fastapi import APIRouter, HTTPException
 from starlette.responses import JSONResponse
-
 from basemodel import BidModel2
 from basemodel.BidModel import BidModel
 from basemodel.GetBidsResponse import GetBidsResponse
 from repository.repository import saveBid, getBids
-
 from basemodel.CreateBidRequest import CreateBidRequest
 
 bidRouter = APIRouter()
 
 @bidRouter.post("/")
-async def createBid(bid: CreateBidRequest):
+async def create_bid(bid: CreateBidRequest):
     try:
         success = await saveBid(bid)
         if success is True:
@@ -24,11 +21,11 @@ async def createBid(bid: CreateBidRequest):
         print(e)
         return JSONResponse(content={"message": "Error"}, status_code=500)
 
-
 @bidRouter.get("/{offer_id}")
-async def getAllBids(offer_id: int):
+async def get_all_bids(offer_id: int):
     try:
-        return await getBids(offer_id)
+        bids = await getBids(offer_id)
+        return GetBidsResponse(bids=bids)
     except Exception as e:
         print(e)
-        return JSONResponse(content={"message": "Error"}, status_code=500)
+        raise HTTPException(status_code=500, detail="Error retrieving bids")

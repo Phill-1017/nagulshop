@@ -44,10 +44,10 @@
     <div class="form-container">
         <h2>Send a Message</h2>
         <form id="messageForm">
-            <input type="hidden" id="sender" name="sender" value="currentUserAccountId"> <!-- Hidden sender field -->
+            <input type="hidden" id="sender" name="sender"> <!-- Hidden sender field -->
 
-            <label for="receiverUsername">Receiver Username:</label>
-            <input type="text" id="receiverUsername" name="receiverUsername" required>
+            <label for="receiver">Receiver Username:</label>
+            <input type="text" id="receiver" name="receiver" required>
 
             <label for="message">Message:</label>
             <textarea id="message" name="message" required></textarea>
@@ -58,40 +58,34 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Assume the current user's ID is stored in session or local storage
-            const senderId = sessionStorage.getItem('userId') || 'defaultSenderId'; // Fetch this from storage
-            document.getElementById('sender').value = senderId;
+            // Retrieve the sender's username from local storage
+            const senderUsername = localStorage.getItem('username');
+
+            if (!senderUsername) {
+                alert('Sender not found in local storage. Please log in again.');
+                return;
+            }
+
+            document.getElementById('sender').value = senderUsername;
 
             document.getElementById('messageForm').addEventListener('submit', function(event) {
                 event.preventDefault();
-                const receiverUsername = document.getElementById('receiverUsername').value;
-                const messageContent = document.getElementById('message').value;
+                const sender = document.getElementById('sender').value;
+                const receiver = document.getElementById('receiver').value;
+                const message = document.getElementById('message').value;
 
-                // First, resolve the receiver's username to their ID
-                fetch(`/api/users/getUserId/${receiverUsername}`, {
-                    method: 'GET',
+                const messageData = {
+                    sender: sender,
+                    receiver: receiver,
+                    message: message
+                };
+
+                fetch('/message', {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(userData => {
-                    if (!userData.id) throw new Error('Receiver not found');
-
-                    // Then send the message
-                    const messageData = {
-                        sender: senderId,
-                        receiver: userData.id,
-                        message: messageContent
-                    };
-
-                    return fetch('/message', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(messageData)
-                    });
+                    },
+                    body: JSON.stringify(messageData)
                 })
                 .then(response => response.json())
                 .then(data => {

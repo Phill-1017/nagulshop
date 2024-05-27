@@ -15,6 +15,8 @@ from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 import uvicorn
 
+import os
+
 #from router.ShoppingCartRouter import cartRouter
 
 app = FastAPI()
@@ -86,9 +88,9 @@ def shop_offer_page():
 # Open the default web browser after server starts
 @app.on_event("startup")
 async def startup_event():
-    webbrowser.open("http://127.0.0.1:8000")
+    webbrowser.open("http://0.0.0.0:8000")
 
 # Running the server
 if __name__ == "__main__":
-
-    uvicorn.run(app, host="127.0.0.1", port=8000)
+    print(os.getenv('DB_URL'))
+    uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -1,24 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/jpg" href="../img/nagul2.jpg">
-    <title>Nagul Shop</title>
-    <link rel="stylesheet" href="static/Stylesheet/index_styles.css">
-</head>
-<body>
-    <div class="container">
-        <h2>Welcome to The Nagul Shop</h2>
-        <form id="loginForm">
-            <input type="text" id="username" name="username" placeholder="Username" required>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-            <input type="submit" value="Login">
-        </form>
-        <button onclick="window.location.href='register'">Register</button>
-    </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const apiBaseURL = 'account'; // Set this to your API's base URL if it's not the same domain
 
     document.getElementById('loginForm').addEventListener('submit', function(event) {
@@ -58,7 +38,3 @@
         });
     });
 });
-
-    </script>
-</body>
-</html>

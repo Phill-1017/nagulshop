@@ -4,54 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nagul Shop Register</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: #485865;
-            margin: 0;
-        }
-        .container {
-            background: #709eb6;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-        }
-        h2 {
-            text-align: center;
-        }
-        form {
-            margin-top: 20px;
-        }
-        input[type="text"], input[type="password"], select {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .admin-pass {
-            display: none; /* Initially hidden */
-        }
-        input[type="submit"] {
-            width: 100%;
-            background-color: #4CAF50;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <link rel="stylesheet" href="static/Stylesheet/register_styles.css">
 </head>
 <body>
     <div class="container">
@@ -70,52 +23,6 @@
             <input type="submit" value="Register">
         </form>
     </div>
-
-    <script>
-        function toggleAdminPassword() {
-            const roleSelect = document.getElementById('role');
-            const adminPassContainer = document.getElementById('adminPassContainer');
-            adminPassContainer.style.display = roleSelect.value === 'admin' ? 'block' : 'none';
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const apiBaseURL = 'account'; // Set this to your API's base URL if it's not the same domain
-
-            document.getElementById('registerForm').addEventListener('submit', function(event) {
-                event.preventDefault();
-                const role = document.getElementById('role').value;
-                const adminPassword = document.getElementById('adminPassword').value;
-                const formData = new FormData(this);
-
-                if (role === 'admin' && adminPassword !== 'ADMIN') { // Replace 'yourAdminPassword' with your real admin password
-                    alert('Incorrect admin password.');
-                    return;
-                }
-
-                fetch(apiBaseURL + '/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(Object.fromEntries(formData))
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Registration failed');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Registration Success:', data);
-                    alert('Registration Successful!');
-                    window.location.href = '/'; // Redirect to the login page after successful registration
-                })
-                .catch(error => {
-                    console.error('Registration Error:', error);
-                    alert('Registration Failed. Check console for more information.');
-                });
-            });
-        });
-    </script>
+    <script src="static/JavaScriptFiles/register_script.js"></script>
 </body>
 </html>

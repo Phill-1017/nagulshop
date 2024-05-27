@@ -38,6 +38,24 @@
         .user-info {
             margin-right: 20px;
         }
+        .content {
+            margin-top: 70px; /* to avoid overlap with the navbar */
+        }
+        .image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .description {
+            margin-top: 20px;
+            color: white;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -46,13 +64,23 @@
             <a href="/home">Home</a>
             <a href="/shop">Shop</a>
             <a href="/messages">Message</a>
-            <a href="cart.html">Shopping Cart</a>
         </div>
         <div class="nav-right">
             <span class="user-info" id="user-name">Loading...</span>
             <a href="/" onclick="return logout()">Logout</a>
         </div>
     </div>
+    <div class="content">
+        <div class="image-container">
+            <img src="static/images/nagul1.png" alt="Description Image">
+            <div class="description">
+                <p>Welcome to NAGUL SHOP! Dive into the latest trends in streetwear with our exclusive collection.</p>
+                <p>Elevate your style with pieces that capture the true essence of urban fashion.</p>
+                <p>Shop now and make a statement with NAGUL SHOP!</p>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
