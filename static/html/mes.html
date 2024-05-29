@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #465864;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            background: #709eb6;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #000000;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            border-bottom: 1px solid #000000;
+            padding: 15px 10px;
+            margin-bottom: 10px;
+            background: #fafafa;
+            border-radius: 5px;
+        }
+
+        .message:last-child {
+            border-bottom: none;
+        }
+
+        .sender {
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 5px;
+        }
+
+        .text {
+            color: #000000;
+        }
+
+        .message:hover {
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Messages</h1>
+        <div id="messages-container"></div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const messagesContainer = document.getElementById("messages-container");
+            const receiver = localStorage.getItem("username");
+
+            if (!receiver) {
+                messagesContainer.innerHTML = "<p>No username found in local storage.</p>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`message/messages/${receiver}`);
+                if (!response.ok) {
+                    throw new Error(`An error has occurred: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.messages.length === 0) {
+                    messagesContainer.innerHTML = "<p>No messages found.</p>";
+                    return;
+                }
+
+                data.messages.forEach(msg => {
+                    const messageElement = document.createElement("div");
+                    messageElement.classList.add("message");
+
+                    const senderElement = document.createElement("div");
+                    senderElement.classList.add("sender");
+                    senderElement.textContent = msg.sender;
+
+                    const textElement = document.createElement("div");
+                    textElement.classList.add("text");
+                    textElement.textContent = msg.text;
+
+                    messageElement.appendChild(senderElement);
+                    messageElement.appendChild(textElement);
+
+                    messagesContainer.appendChild(messageElement);
+                });
+            } catch (error) {
+                messagesContainer.innerHTML = `<p>Error: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -20,7 +20,7 @@ import os
 
 
 Base = declarative_base()
-DATABASE_URL = os.getenv('DB_URL', "postgresql+psycopg2://postgres:mynagulshop@localhost:5432/NagulShop_BBY")
+DATABASE_URL = os.getenv('DB_URL', "postgresql+psycopg2://lfgrljdrln:Postgres10@naguldatabase.postgres.database.azure.com:5432/nagulshopapp-database")
 engine = create_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(autocommit=False, bind=engine)
 db = SessionLocal()
