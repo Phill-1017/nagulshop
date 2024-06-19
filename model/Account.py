@@ -4,7 +4,6 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base();
 
 class Account(Base):
-
     __tablename__ = 'accounts'
 
     id = Column(Integer, index=True, primary_key=True, autoincrement=True)

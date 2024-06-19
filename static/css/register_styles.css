@@ -29,7 +29,7 @@ input[type="text"], input[type="password"], select {
     box-sizing: border-box;
 }
 .admin-pass {
-    display: none; /* Initially hidden */
+    display: none;
 }
 input[type="submit"] {
     width: 100%;

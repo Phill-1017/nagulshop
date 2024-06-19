@@ -1,16 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from starlette.responses import JSONResponse
-from sqlalchemy.orm import Session
 from basemodel.MessageResponse import MessagesResponse, MessageDetail
 from repository import repository
 from model.Message import Message
 from basemodel.Message import MessageModel
-from repository.repository import get_db
 
 messageRouter = APIRouter()
 
 @messageRouter.post("", response_model=MessageModel)
-async def post_message(message: MessageModel):
+def post_message(message: MessageModel):
     try:
         msg = Message(sender=message.sender, receiver=message.receiver, message=message.message)
         repository.postMessage(msg)
@@ -20,8 +18,8 @@ async def post_message(message: MessageModel):
         return JSONResponse(content={"message": "Error"}, status_code=500)
 
 @messageRouter.get("/messages/{receiver}", response_model=MessagesResponse)
-async def read_messages(receiver: str, db: Session = Depends(get_db)):
-    messages = db.query(Message).filter(Message.receiver == receiver).all()
+def read_messages(receiver: str):
+    messages = repository.fetchMessages(receiver)
     if not messages:
         raise HTTPException(status_code=404, detail="No messages found for the receiver.")
     response = MessagesResponse(messages=[MessageDetail(sender=msg.sender, text=msg.message) for msg in messages])

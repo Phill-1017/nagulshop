@@ -1,8 +1,5 @@
 import datetime
-
 from pydantic import BaseModel
-
-
 class BidModel(BaseModel):
     id: int
     offer_id: int

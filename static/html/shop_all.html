@@ -36,7 +36,7 @@
             z-index: 1001;
             width: 80%;
             max-width: 600px;
-            overflow: auto; /* Ensures modal content is scrollable */
+            overflow: auto;
         }
         .backdrop {
             position: fixed;
@@ -68,10 +68,8 @@
 <body>
     <h1>Available Offers</h1>
     <div id="offersList">
-        <!-- Offers will be dynamically loaded here -->
     </div>
 
-    <!-- Modal for showing offer details and bidding -->
     <div class="modal">
         <h2 id="modalTitle">Offer Details</h2>
         <p id="modalDescription"></p>
@@ -84,7 +82,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Bids will be added here dynamically -->
             </tbody>
         </table>
         <h3>Place Your Bid</h3>
@@ -130,10 +127,10 @@
             .then(response => response.json())
             .then(data => {
                 const bidsTable = document.getElementById('bidsTable').getElementsByTagName('tbody')[0];
-                bidsTable.innerHTML = ''; // Clear existing bids
+                bidsTable.innerHTML = '';
                 data.forEach(bid => {
                     const row = bidsTable.insertRow();
-                    row.insertCell(0).textContent = bid.bidder; // Assume API provides bidder name
+                    row.insertCell(0).textContent = bidder.id;
                     row.insertCell(1).textContent = bid.amount;
                 });
             })
@@ -150,7 +147,7 @@
 
         function submitBid(offerId) {
             const bidAmount = document.getElementById('bidAmount').value;
-            fetch('/bid/', {
+            fetch('/bid/bid', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -161,7 +158,7 @@
             .then(data => {
                 alert(data.message);
                 closeModal();
-                loadBids(offerId); // Reload bids to include the new one
+                loadBids(offerId);
             })
             .catch(error => {
                 console.error('Error submitting bid:', error);

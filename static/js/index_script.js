@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const apiBaseURL = 'account'; // Set this to your API's base URL if it's not the same domain
+    const apiBaseURL = 'account';
 
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -19,15 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             console.log('Login Success:', data);
-            localStorage.setItem('id', data.id);  // Store user ID
-            localStorage.setItem('username', data.username);  // Store username
-            localStorage.setItem('role', data.role);  // Store role
+            localStorage.setItem('id', data.id);
+            localStorage.setItem('username', data.username);
+            localStorage.setItem('role', data.role);
 
-            // Redirect based on the role
             if (data.role === 'admin') {
-                window.location.href = '/home_admin'; // Redirect to admin home page
+                window.location.href = '/home_admin';
             } else if (data.role === 'user') {
-                window.location.href = '/home'; // Redirect to user home page
+                window.location.href = '/home';
             } else {
                 alert('Access Denied: You do not have the permissions.');
             }

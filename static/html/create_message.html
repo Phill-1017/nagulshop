@@ -44,7 +44,7 @@
     <div class="form-container">
         <h2>Send a Message</h2>
         <form id="messageForm">
-            <input type="hidden" id="sender" name="sender"> <!-- Hidden sender field -->
+            <input type="hidden" id="sender" name="sender">
 
             <label for="receiver">Receiver Username:</label>
             <input type="text" id="receiver" name="receiver" required>
@@ -58,7 +58,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Retrieve the sender's username from local storage
             const senderUsername = localStorage.getItem('username');
 
             if (!senderUsername) {

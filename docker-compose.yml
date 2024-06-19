@@ -2,23 +2,22 @@ version: '3.8'
 
 services:
   app:
-    image: nagulregistery.azurecr.io/images/web-app:latest
+    image: nagulshop_app:1.0.0
     ports:
       - "8000:8000"
     depends_on:
       - db
     environment:
-      DB_URL: "postgresql+psycopg2://postgres:postgres@db:5432/NagulShop_BBY"
+      DB_URL: "postgresql+psycopg2://postgres:postgres@db:5432/postgres"
 
   db:
-    image: postgres:latest
+    image: postgres:16
     restart: always
     ports:
       - "5433:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: NagulShop_BBY
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

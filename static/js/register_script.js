@@ -5,7 +5,7 @@ function toggleAdminPassword() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const apiBaseURL = 'account'; // Set this to your API's base URL if it's not the same domain
+    const apiBaseURL = 'account';
 
     document.getElementById('registerForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const adminPassword = document.getElementById('adminPassword').value;
         const formData = new FormData(this);
 
-        if (role === 'admin' && adminPassword !== 'ADMIN') { // Replace 'ADMIN' with your real admin password
+        if (role === 'admin' && adminPassword !== 'ADMIN') {
             alert('Incorrect admin password.');
             return;
         }
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             console.log('Registration Success:', data);
             alert('Registration Successful!');
-            window.location.href = '/'; // Redirect to the login page after successful registration
+            window.location.href = '/';
         })
         .catch(error => {
             console.error('Registration Error:', error);
