@@ -8,6 +8,7 @@ from router.BidRouter import bidRouter
 from fastapi.responses import FileResponse
 import uvicorn
 import os
+from frontend import cli
 
 app = FastAPI()
 

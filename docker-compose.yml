@@ -1,10 +1,17 @@
 version: '3.8'
 
 services:
+  cli:
+    image: nagulshop-cli:1.0.0
+    stdin_open: true
+    depends_on:
+      - app
+    environment:
+      API_URL: "http://app:80"
   app:
     image: nagulshop_app:1.0.0
     ports:
-      - "8000:8000"
+      - "8000:80"
     depends_on:
       - db
     environment:
@@ -20,6 +27,7 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
 
 volumes:
   postgres_data:
